@@ -1,0 +1,7 @@
+LLM Support — Failures
+Switched LLM models multiple times. 
+Thought it was best to revert to original state two times, because of the overdone amount of edits to multiple files.
+Initially produced duplicate diagnostics because the visitor still delegated to super after reporting BitPattern errors.
+Some early explanations assumed incorrect interaction between BaseTypeVisitor and framework diagnostics.
+Needed to provided snip bits of text from the manual to correct assumptions.
+The model occasionally overexplained instead of providing concise diffs.
