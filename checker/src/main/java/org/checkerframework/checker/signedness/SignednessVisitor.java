@@ -332,6 +332,21 @@ public class SignednessVisitor extends BaseTypeVisitor<SignednessAnnotatedTypeFa
         }
         break;
 
+      case MINUS_ASSIGNMENT: // Added
+      case MULTIPLY_ASSIGNMENT: // Added
+        if (hasBitPatternAnnotation(varType)) {
+          checker.reportError(
+            var,
+            "compound.assignment.bitpattern",
+            varType);
+        } else if (hasBitPatternAnnotation(exprType)) {
+          checker.reportError(
+            expr,
+            "compound.assignment.bitpattern", 
+            kindWithoutAssignment(kind));
+        }
+        break;
+
       case RIGHT_SHIFT_ASSIGNMENT:
         if (hasUnsignedAnnotation(varType)) {
           checker.reportError(
@@ -377,20 +392,6 @@ public class SignednessVisitor extends BaseTypeVisitor<SignednessAnnotatedTypeFa
           }
         }
 
-      case MINUS_ASSIGNMENT: // Added
-      case MULTIPLY_ASSIGNMENT: // Added
-        if (hasBitPatternAnnotation(varType)) {
-          checker.reportError(
-            var,
-            "compound.assignment.bitpattern",
-            varType);
-        } else if (hasBitPatternAnnotation(exprType)) {
-          checker.reportError(
-            expr,
-            "compound.assignment.bitpattern", 
-            kindWithoutAssignment(kind));
-        }
-        break;
       // Other plus binary trees should be handled in the default case.
       // fall through
       default:

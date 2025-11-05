@@ -1,4 +1,5 @@
 // Added JDK methods (stub)
+package java.lang;
 import org.checkerframework.checker.signedness.qual.BitPattern;
 
 class Double {

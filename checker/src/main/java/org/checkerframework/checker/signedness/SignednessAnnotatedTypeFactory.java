@@ -124,6 +124,19 @@ public class SignednessAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
   @Override
   protected void addComputedTypeAnnotations(Tree tree, AnnotatedTypeMirror type, boolean iUseFlow) {
     Tree.Kind treeKind = tree.getKind();
+    if (tree instanceof BinaryTree
+        && (treeKind == Tree.Kind.AND || treeKind == Tree.Kind.OR || treeKind == Tree.Kind.XOR)) {
+      BinaryTree binaryTree = (BinaryTree) tree;
+      AnnotatedTypeMirror leftType = getAnnotatedType(binaryTree.getLeftOperand());
+      AnnotatedTypeMirror rightType = getAnnotatedType(binaryTree.getRightOperand());
+      if (leftType.hasPrimaryAnnotation(BitPattern.class)
+          || rightType.hasPrimaryAnnotation(BitPattern.class)) {
+        type.replaceAnnotation(BIT_PATTERN);
+        // Skip other processing for this tree
+        super.addComputedTypeAnnotations(tree, type, iUseFlow);
+        return;
+      }
+    }
     if (treeKind == Tree.Kind.INT_LITERAL) {
       int literalValue = (int) ((LiteralTree) tree).getValue();
       if (literalValue >= 0) {
@@ -138,7 +151,7 @@ public class SignednessAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
       } else {
         type.replaceAnnotation(SIGNEDNESS_GLB);
       }
-    } else if (!computingAnnotatedTypeMirrorOfLHS) {
+    } else if (!computingAnnotatedTypeMirrorOfLHS && !type.hasPrimaryAnnotation(BitPattern.class)) {
       addSignedPositiveAnnotation(tree, type);
     }
 
